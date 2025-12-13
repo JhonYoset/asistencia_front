@@ -1,1 +1,59 @@
-<p>justificaciones works!</p>
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-warning text-dark">
+      <h3 class="mb-0">
+        <i class="fas fa-file-signature me-2"></i> Justificaciones Pendientes de Aprobación
+      </h3>
+    </div>
+    <div class="card-body">
+      <div *ngIf="cargando" class="text-center my-5">
+        <div class="spinner-border text-warning" style="width: 3rem; height: 3rem;" role="status"></div>
+      </div>
+
+      <div *ngIf="!cargando && justificaciones.length === 0" class="alert alert-info text-center">
+        <i class="fas fa-check-circle fa-2x mb-3"></i>
+        <br>
+        No hay justificaciones pendientes.
+      </div>
+
+      <div *ngIf="!cargando && justificaciones.length > 0" class="table-responsive">
+        <table class="table table-hover">
+          <thead class="table-light">
+            <tr>
+              <th>Empleado</th>
+              <th>Fecha</th>
+              <th>Tipo</th>
+              <th>Motivo</th>
+              <th>Solicitado</th>
+              <th>Acción</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let j of justificaciones">
+              <td><strong>{{ j.username }}</strong></td>
+              <td>{{ j.fecha | date:'dd/MM/yyyy' }}</td>
+              <td>
+                <span class="badge" [ngClass]="{
+                  'bg-danger text-white': j.tipo === 'AUSENCIA',
+                  'bg-warning text-dark': j.tipo === 'TARDANZA'
+                }">
+                  {{ j.tipo }}
+                </span>
+              </td>
+              <td>{{ j.motivo }}</td>
+              <td>{{ j.fechaSolicitud }}</td>
+              <td>
+                <button class="btn btn-success btn-sm" (click)="aprobar(j.id!)">
+                  <i class="fas fa-check me-1"></i> Aprobar
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div *ngIf="mensaje" class="alert alert-success mt-3">{{ mensaje }}</div>
+      <div *ngIf="error" class="alert alert-danger mt-3">{{ error }}</div>
+    </div>
+  </div>
+</div>
