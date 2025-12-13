@@ -1,11 +1,13 @@
 <div class="app-container">
-  <div *ngIf="authService.isLoggedIn()" class="d-flex">
+  <!-- Mostrar sidebar solo si está logueado -->
+  <div *ngIf="authService.isLoggedIn()" class="app-layout">
     <app-sidebar></app-sidebar>
     <div class="main-content">
       <router-outlet></router-outlet>
     </div>
   </div>
   
+  <!-- Mostrar solo contenido de auth si no está logueado -->
   <div *ngIf="!authService.isLoggedIn()">
     <router-outlet></router-outlet>
   </div>
