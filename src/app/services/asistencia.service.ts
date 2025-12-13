@@ -29,4 +29,8 @@ export class AsistenciaService {
       params: { desde, hasta }
     });
   }
+
+  getEstadoActual(): Observable<any> {
+    return this.http.get(`${this.URL}/estado-actual`);
+  }
 }

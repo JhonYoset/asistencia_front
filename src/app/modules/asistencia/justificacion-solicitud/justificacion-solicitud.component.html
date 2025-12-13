@@ -42,8 +42,17 @@
             class="form-control" 
             rows="4"
             placeholder="Describe detalladamente el motivo de tu justificación..."
-            [class.is-invalid]="motivoInvalido">
+            [class.is-invalid]="motivoInvalido"
+            maxlength="500">
           </textarea>
+          <div class="form-text" *ngIf="!motivoInvalido">
+            <span *ngIf="caracteresRestantes > 0" class="text-danger">
+              Faltan {{ caracteresRestantes }} caracteres
+            </span>
+            <span *ngIf="caracteresRestantes === 0" class="text-success">
+              ✓ Mínimo alcanzado
+            </span>
+          </div>
           <div class="invalid-feedback" *ngIf="motivoInvalido">
             El motivo debe tener al menos 10 caracteres
           </div>
