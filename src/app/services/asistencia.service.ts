@@ -8,7 +8,7 @@ import { Asistencia } from '../core/models/asistencia.model';
   providedIn: 'root'
 })
 export class AsistenciaService {
-  private readonly URL = `${environment.api}/asistencia`;
+  private readonly URL = `${environment.api}/api/asistencia`; // ✅ AGREGADO /api/
 
   constructor(private http: HttpClient) { }
 

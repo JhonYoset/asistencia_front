@@ -23,7 +23,7 @@ export class HttpErrorInterceptor implements HttpInterceptor {
             console.warn('Bad Request')
             break;
           case 401:
-            console.warn('Unauthorised diego quispe')
+            console.warn('Unauthorised jhon luna')
             break;
           case 404:
             console.warn('Not found')

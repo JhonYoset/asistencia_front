@@ -1,5 +1,5 @@
-export interface Usuario {
-  id?: number;
+export interface UsuarioResponse {
+  id?: number; // ← Cambia a opcional
   username: string;
   password?: string;
   nombre: string;
@@ -8,4 +8,4 @@ export interface Usuario {
   fechaCreacion?: Date | string;
   ultimoAcceso?: Date | string;
   totalAsistencias?: number;
-} 
+}

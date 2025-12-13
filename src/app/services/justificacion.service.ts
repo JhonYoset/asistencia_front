@@ -8,7 +8,7 @@ import { Justificacion, JustificacionRequest } from '../core/models/justificacio
   providedIn: 'root'
 })
 export class JustificacionService {
-  private readonly URL = `${environment.api}/asistencia`;
+  private readonly URL = `${environment.api}/api/asistencia`; // ✅ AGREGADO /api/
 
   constructor(private http: HttpClient) { }
 
@@ -21,7 +21,7 @@ export class JustificacionService {
   }
 
   getJustificacionesPendientes(): Observable<Justificacion[]> {
-    // Nota: Este endpoint necesita ser implementado en el backend
-    return this.http.get<Justificacion[]>(`${environment.api}/admin/justificaciones/pendientes`);
+    // ✅ CORREGIDO: Agregar /api/ antes de admin
+    return this.http.get<Justificacion[]>(`${environment.api}/api/admin/justificaciones/pendientes`);
   }
 }

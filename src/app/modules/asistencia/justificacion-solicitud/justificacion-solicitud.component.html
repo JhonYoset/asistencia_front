@@ -1,1 +1,100 @@
-<p>justificacion-solicitud works!</p>
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-warning text-dark">
+      <h3 class="mb-0">
+        <i class="fas fa-file-signature me-2"></i> Solicitar Justificación
+      </h3>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="formJustificacion" (ngSubmit)="solicitarJustificacion()">
+        <div class="row mb-3">
+          <div class="col-md-6">
+            <label class="form-label fw-bold">
+              <i class="fas fa-calendar me-2"></i> Fecha a Justificar
+            </label>
+            <input 
+              formControlName="fecha" 
+              type="date" 
+              class="form-control"
+              [class.is-invalid]="fechaInvalida">
+            <div class="invalid-feedback" *ngIf="fechaInvalida">
+              La fecha es obligatoria
+            </div>
+          </div>
+
+          <div class="col-md-6">
+            <label class="form-label fw-bold">
+              <i class="fas fa-tag me-2"></i> Tipo de Justificación
+            </label>
+            <select formControlName="tipo" class="form-select">
+              <option value="TARDANZA">Tardanza</option>
+              <option value="AUSENCIA">Ausencia</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="mb-3">
+          <label class="form-label fw-bold">
+            <i class="fas fa-comment-dots me-2"></i> Motivo (mínimo 10 caracteres)
+          </label>
+          <textarea 
+            formControlName="motivo" 
+            class="form-control" 
+            rows="4"
+            placeholder="Describe detalladamente el motivo de tu justificación..."
+            [class.is-invalid]="motivoInvalido">
+          </textarea>
+          <div class="invalid-feedback" *ngIf="motivoInvalido">
+            El motivo debe tener al menos 10 caracteres
+          </div>
+        </div>
+
+        <div class="d-flex gap-2">
+          <button 
+            type="submit" 
+            class="btn btn-warning text-dark btn-lg"
+            [disabled]="!formJustificacion.valid || cargando">
+            <span *ngIf="cargando" class="spinner-border spinner-border-sm me-2"></span>
+            <i *ngIf="!cargando" class="fas fa-paper-plane me-2"></i>
+            {{ cargando ? 'Enviando...' : 'Enviar Solicitud' }}
+          </button>
+
+          <button 
+            type="button" 
+            class="btn btn-outline-secondary btn-lg" 
+            routerLink="/empleado/checkin">
+            <i class="fas fa-arrow-left me-2"></i> Volver
+          </button>
+        </div>
+      </form>
+
+      <!-- Mensajes de respuesta -->
+      <div *ngIf="mensaje" class="alert alert-success alert-dismissible fade show mt-4">
+        <i class="fas fa-check-circle me-2"></i>
+        {{ mensaje }}
+        <button type="button" class="btn-close" (click)="mensaje=''"></button>
+      </div>
+
+      <div *ngIf="error" class="alert alert-danger alert-dismissible fade show mt-4">
+        <i class="fas fa-exclamation-triangle me-2"></i>
+        {{ error }}
+        <button type="button" class="btn-close" (click)="error=''"></button>
+      </div>
+
+      <!-- Información adicional -->
+      <div class="card mt-4 bg-light">
+        <div class="card-body">
+          <h6 class="text-muted">
+            <i class="fas fa-info-circle me-2"></i> Información Importante
+          </h6>
+          <ul class="text-muted mb-0 small">
+            <li><strong>Tardanza:</strong> Ingreso después de las 9:10 AM</li>
+            <li><strong>Ausencia:</strong> No asistencia a la jornada laboral</li>
+            <li>Tu justificación será revisada por un administrador</li>
+            <li>Recibirás una notificación cuando sea aprobada o rechazada</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
