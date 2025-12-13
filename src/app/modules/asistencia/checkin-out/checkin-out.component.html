@@ -1,0 +1,51 @@
+<div class="container mt-4">
+  <div class="card shadow">
+    <div class="card-header bg-primary text-white">
+      <h3 class="mb-0">Registro de Asistencia</h3>
+    </div>
+    <div class="card-body text-center">
+      <div class="mb-4">
+        <h5>Estado actual: 
+          <span [ngClass]="{'text-success': enOficina, 'text-danger': !enOficina}">
+            {{ enOficina ? 'EN OFICINA' : 'FUERA DE OFICINA' }}
+          </span>
+        </h5>
+      </div>
+
+      <div class="row justify-content-center mb-4">
+        <div class="col-md-6">
+          <button class="btn btn-success btn-lg w-100 mb-2" 
+                  (click)="realizarCheckin()"
+                  [disabled]="enOficina">
+            <i class="fas fa-sign-in-alt"></i> CHECK-IN
+          </button>
+          <button class="btn btn-warning btn-lg w-100" 
+                  (click)="realizarCheckout()"
+                  [disabled]="!enOficina">
+            <i class="fas fa-sign-out-alt"></i> CHECK-OUT
+          </button>
+        </div>
+      </div>
+
+      <div *ngIf="mensaje" class="alert alert-success mt-3">
+        {{ mensaje }}
+      </div>
+      
+      <div *ngIf="error" class="alert alert-danger mt-3">
+        {{ error }}
+      </div>
+
+      <div class="mt-4">
+        <button class="btn btn-secondary me-2" routerLink="/empleado/historial">
+          Ver Historial
+        </button>
+        <button class="btn btn-info me-2" routerLink="/empleado/justificacion">
+          Solicitar Justificación
+        </button>
+        <button class="btn btn-outline-danger" (click)="logout()">
+          Cerrar Sesión
+        </button>
+      </div>
+    </div>
+  </div>
+</div>

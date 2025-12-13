@@ -3,8 +3,7 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
 import { Router } from '@angular/router'; // Importar Router
-import { environment } from 'src/environments/environment';
-
+import { environment } from '../../environments/environment';
 
 @Injectable({
   providedIn: 'root'

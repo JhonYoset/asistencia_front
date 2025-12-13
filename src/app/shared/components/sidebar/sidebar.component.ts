@@ -1,71 +1,43 @@
-import { Component } from '@angular/core';
-import { DataServiceService } from '@shared/services/data-service.service';
-import { MessageService } from '@shared/services/message.service';
-import { Observable } from 'rxjs';
+import { Component, OnInit } from '@angular/core';
+import { AuthService } from 'src/app/services/auth.service';
+
 
 @Component({
   selector: 'app-sidebar',
   templateUrl: './sidebar.component.html',
   styleUrls: ['./sidebar.component.css']
 })
-export class SidebarComponent {
-  mainMenu: {
-    defaultOptions: Array<any>,
-    accessLink: Array<any>
-  } = { defaultOptions: [], accessLink: [] }
- 
-  customOptions: Array<any> = [];
+export class SidebarComponent implements OnInit {
+  menuItems: any[] = [];
+  isAdmin: boolean = false;
+  username: string = '';
 
-  constructor(){}
+  constructor(private authService: AuthService) { }
 
-  ngOnInit() : void{
-    this.mainMenu.defaultOptions = [
-      {
-        name: 'Home',
-        icon: 'uil uil-estate',
-        router: ['/', 'auth']
-      },
-      {
-        name: 'Buscar',
-        icon: 'uil uil-search',
-        router: ['/', 'history']
-      },
-      {
-        name: 'Tu biblioteca',
-        icon: 'uil uil-chart',
-        router: ['/', 'favorites'],
-        query: { hola: 'mundo' }
-      }
-    ]
- 
-    this.mainMenu.accessLink = [
-      {
-        name: 'Crear lista',
-        icon: 'uil-plus-square'
-      },
-      {
-        name: 'Canciones que te gustan',
-        icon: 'uil-heart-medical'
-      }
-    ]
- 
-    this.customOptions = [
-      {
-        name: 'Mi lista º1',
-        router: ['/']
-      },
-      {
-        name: 'Mi lista º2',
-        router: ['/']
-      },
-      {
-        name: 'Mi lista º3',
-        router: ['/']
-      },
-      {
-        name: 'Mi lista º4',
-        router: ['/']
-      }
-    ]
+  ngOnInit(): void {
+    this.username = this.authService.getUsername();
+    this.isAdmin = this.authService.getUserRoles().includes('ROLE_ADMIN');
+    this.loadMenu();
+  }
+
+  loadMenu(): void {
+    if (this.isAdmin) {
+      this.menuItems = [
+        { name: 'Dashboard', icon: 'fas fa-tachometer-alt', router: ['/admin/dashboard'] },
+        { name: 'Justificaciones', icon: 'fas fa-file-signature', router: ['/admin/justificaciones'] },
+        { name: 'Reportes', icon: 'fas fa-chart-bar', router: ['/admin/reportes'] },
+        { name: 'Usuarios', icon: 'fas fa-users', router: ['/admin/usuarios'] }
+      ];
+    } else {
+      this.menuItems = [
+        { name: 'Registro', icon: 'fas fa-clock', router: ['/empleado/checkin'] },
+        { name: 'Historial', icon: 'fas fa-history', router: ['/empleado/historial'] },
+        { name: 'Justificaciones', icon: 'fas fa-file-alt', router: ['/empleado/justificacion'] }
+      ];
+    }
+  }
+
+  logout(): void {
+    this.authService.logout();
   }
 }

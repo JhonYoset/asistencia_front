@@ -1,0 +1,95 @@
+<div class="container-fluid mt-4">
+  <h2 class="mb-4">Dashboard Administrativo</h2>
+
+  <!-- Tarjetas de resumen -->
+  <div class="row mb-4">
+    <div class="col-md-3">
+      <div class="card text-white bg-primary">
+        <div class="card-body">
+          <h5 class="card-title">Total Empleados</h5>
+          <p class="card-text display-6">{{ estadisticas.totalEmpleados || 0 }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-success">
+        <div class="card-body">
+          <h5 class="card-title">Presentes Hoy</h5>
+          <p class="card-text display-6">{{ estadisticas.presentesHoy || 0 }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-warning">
+        <div class="card-body">
+          <h5 class="card-title">Justificaciones Pendientes</h5>
+          <p class="card-text display-6">{{ estadisticas.justificacionesPendientes || 0 }}</p>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="card text-white bg-info">
+        <div class="card-body">
+          <h5 class="card-title">% Puntualidad</h5>
+          <p class="card-text display-6">{{ estadisticas.porcentajePuntualidad || 0 }}%</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Gráficos -->
+  <div class="row mb-4">
+    <div class="col-md-8">
+      <div class="card">
+        <div class="card-header">
+          <h5>Asistencia por Día (Última Semana)</h5>
+        </div>
+        <div class="card-body">
+          <canvas baseChart
+                  [data]="barChartData"
+                  [options]="barChartOptions"
+                  [type]="barChartType">
+          </canvas>
+        </div>
+      </div>
+    </div>
+    <div class="col-md-4">
+      <div class="card">
+        <div class="card-header">
+          <h5>Distribución de Puntualidad</h5>
+        </div>
+        <div class="card-body">
+          <canvas baseChart
+                  [data]="donutChartData"
+                  [options]="donutChartOptions"
+                  [type]="donutChartType">
+          </canvas>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Acciones rápidas -->
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          <h5>Acciones Rápidas</h5>
+        </div>
+        <div class="card-body">
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary" routerLink="/admin/justificaciones">
+              <i class="fas fa-file-signature"></i> Gestionar Justificaciones
+            </button>
+            <button class="btn btn-success" routerLink="/admin/reportes">
+              <i class="fas fa-chart-bar"></i> Ver Reportes
+            </button>
+            <button class="btn btn-info" routerLink="/admin/usuarios">
+              <i class="fas fa-users"></i> Gestionar Usuarios
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

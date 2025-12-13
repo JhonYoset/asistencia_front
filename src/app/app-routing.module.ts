@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
-import { HomePageComponent } from './modules/home/pages/home-page/home-page.component';
 import { sessionGuard } from '@core/guards/session.guard';
+import { roleGuard } from '@core/guards/role.guard';
 
 const routes: Routes = [
   {
@@ -9,10 +9,25 @@ const routes: Routes = [
     loadChildren: () => import('./modules/auth/auth.module').then(m => m.AuthModule)
   },
   {
-    path : '',
-    component : HomePageComponent,
-    loadChildren : () => import('./modules/home/home.module').then(m => m.HomeModule),
-    canActivate : [sessionGuard]
+    path: 'empleado',
+    loadChildren: () => import('./modules/asistencia/asistencia.module').then(m => m.AsistenciaModule),
+    canActivate: [sessionGuard],
+    data: { role: 'EMPLEADO' }
+  },
+  {
+    path: 'admin',
+    loadChildren: () => import('./modules/admin/admin.module').then(m => m.AdminModule),
+    canActivate: [sessionGuard, roleGuard],
+    data: { role: 'ADMIN' }
+  },
+  {
+    path: '',
+    redirectTo: '/empleado/checkin',
+    pathMatch: 'full'
+  },
+  {
+    path: '**',
+    redirectTo: '/empleado/checkin'
   }
 ];
 

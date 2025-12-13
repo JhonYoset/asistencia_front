@@ -1,46 +1,61 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../../services/auth.service';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { AuthService } from 'src/app/services/auth.service';
+
 
 @Component({
   selector: 'app-auth-page',
   templateUrl: './auth-page.component.html',
   styleUrls: ['./auth-page.component.css']
 })
-export class AuthPageComponent implements OnInit{
-
-  errorSession : boolean = false
-
-  formLogin : FormGroup = new FormGroup({})
+export class AuthPageComponent implements OnInit {
+  errorSession: boolean = false;
+  mensajeError: string = '';
+  formLogin: FormGroup = new FormGroup({});
+  cargando: boolean = false;
 
   ngOnInit(): void {
     this.formLogin = new FormGroup({
-      email: new FormControl('', [Validators.required, Validators.email]),
+      username: new FormControl('', [Validators.required]),
       password: new FormControl('', [Validators.required])
     });
-  } 
-
-  constructor(private authService : AuthService, private router : Router){
-    authService.sendCredentials("", "")
   }
+
+  constructor(
+    private authService: AuthService,
+    private router: Router
+  ) { }
 
   sendLogin(): void {
     if (this.formLogin.valid) {
-      this.authService.sendCredentials(this.formLogin.value.email, this.formLogin.value.password)
-        .subscribe({
-          next : (response) => {
-            console.log('Login Successful', response)
-            this.router.navigate(['/'])
-            this.errorSession = false
-          },
-          error : (error) => {
-            console.log('Login failed', error)
-            this.errorSession = true
+      this.cargando = true;
+      this.errorSession = false;
+      
+      this.authService.login(
+        this.formLogin.value.username,
+        this.formLogin.value.password
+      ).subscribe({
+        next: (token) => {
+          // Obtener roles del token
+          const roles = this.authService.getUserRoles();
+          
+          // Redirigir según el rol
+          if (roles.includes('ROLE_ADMIN')) {
+            this.router.navigate(['/admin/dashboard']);
+          } else {
+            this.router.navigate(['/empleado/checkin']);
           }
-        })
-    } else {
-      console.log('Formulario inválido');
+          
+          this.cargando = false;
+        },
+        error: (error) => {
+          console.error('Login failed', error);
+          this.errorSession = true;
+          this.mensajeError = error.error?.mensaje || 'Credenciales inválidas';
+          this.cargando = false;
+        }
+      });
     }
   }
 }
