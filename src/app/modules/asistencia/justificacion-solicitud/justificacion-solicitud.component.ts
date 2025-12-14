@@ -21,13 +21,11 @@ export class JustificacionSolicitudComponent implements OnInit {
   constructor(private justificacionService: JustificacionService) {}
 
   ngOnInit(): void {
-    // Establecer fecha de hoy por defecto
     const hoy = new Date().toISOString().split('T')[0];
     this.formJustificacion.patchValue({ fecha: hoy });
   }
 
   solicitarJustificacion(): void {
-    // Marcar todos los campos como touched para mostrar errores
     Object.keys(this.formJustificacion.controls).forEach(key => {
       this.formJustificacion.get(key)?.markAsTouched();
     });
@@ -41,9 +39,8 @@ export class JustificacionSolicitudComponent implements OnInit {
     this.mensaje = '';
     this.error = '';
 
-    // ✅ ENVIAR DIRECTAMENTE LOS VALORES DEL FORMULARIO
     const justificacion = {
-      fecha: this.formJustificacion.value.fecha!, // Viene como string "yyyy-MM-dd"
+      fecha: this.formJustificacion.value.fecha!,
       tipo: this.formJustificacion.value.tipo!,
       motivo: this.formJustificacion.value.motivo!.trim()
     };
@@ -57,7 +54,7 @@ export class JustificacionSolicitudComponent implements OnInit {
                       `ID: ${response.id}\n` +
                       `Estado: ${response.estado}`;
         
-        // Resetear formulario
+       
         this.formJustificacion.reset({
           tipo: 'TARDANZA',
           fecha: new Date().toISOString().split('T')[0]
@@ -69,7 +66,6 @@ export class JustificacionSolicitudComponent implements OnInit {
         console.error('Error completo:', err);
         console.error('Error body:', err.error);
         
-        // Intentar obtener mensaje de error del backend
         if (err.error && typeof err.error === 'object' && err.error.mensaje) {
           this.error = err.error.mensaje;
         } else if (err.error && typeof err.error === 'string') {

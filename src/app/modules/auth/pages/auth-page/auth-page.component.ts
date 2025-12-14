@@ -40,11 +40,9 @@ export class AuthPageComponent implements OnInit {
         next: (token) => {
           console.log('Login exitoso, token recibido:', token);
           
-          // Obtener roles del token
           const roles = this.authService.getUserRoles();
           console.log('Roles del usuario:', roles);
-          
-          // Redirigir según el rol
+         
           if (roles.includes('ROLE_ADMIN')) {
             console.log('Redirigiendo a dashboard admin');
             this.router.navigate(['/admin/dashboard']);
@@ -59,9 +57,7 @@ export class AuthPageComponent implements OnInit {
           console.error('Error en login:', error);
           this.errorSession = true;
           this.mensajeError = error.error?.mensaje || 'Credenciales inválidas';
-          
-          // Para debugging, muestra más información
-          if (error.status === 0) {
+           if (error.status === 0) {
             this.mensajeError = 'No se puede conectar al servidor. Verifica que el backend esté corriendo en http://localhost:8080';
           } else if (error.status === 401) {
             this.mensajeError = 'Usuario o contraseña incorrectos';

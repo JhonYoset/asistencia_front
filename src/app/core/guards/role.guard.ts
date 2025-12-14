@@ -6,8 +6,7 @@ interface TokenPayload {
   roles: string[];
   sub: string;
 }
-
-// Función para decodificar JWT sin dependencia externa
+ 
 const decodeJWT = (token: string): TokenPayload | null => {
   try {
     const base64Url = token.split('.')[1];
@@ -45,8 +44,7 @@ export const roleGuard: CanActivateFn = (route, state) => {
     if (decoded.roles && decoded.roles.includes(`ROLE_${requiredRole}`)) {
       return true;
     }
-    
-    // Redirigir según el rol del usuario
+ 
     if (decoded.roles.includes('ROLE_ADMIN')) {
       router.navigate(['/admin/dashboard']);
     } else {

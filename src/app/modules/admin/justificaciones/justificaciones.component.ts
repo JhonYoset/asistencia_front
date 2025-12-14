@@ -53,9 +53,7 @@ export class JustificacionesComponent implements OnInit {
         next: (msg) => {
           console.log('✅ Justificación aprobada:', msg);
           this.mensaje = msg;
-          this.cargarPendientes(); // Recargar lista
-          
-          // Limpiar mensaje después de 3 segundos
+          this.cargarPendientes();  
           setTimeout(() => {
             this.mensaje = '';
           }, 3000);
@@ -64,7 +62,6 @@ export class JustificacionesComponent implements OnInit {
           console.error('❌ Error al aprobar:', err);
           this.error = err.error?.mensaje || 'Error al aprobar la justificación';
           
-          // Limpiar error después de 3 segundos
           setTimeout(() => {
             this.error = '';
           }, 3000);
@@ -72,8 +69,7 @@ export class JustificacionesComponent implements OnInit {
       });
     }
   }
-
-  // Helper para verificar si hay justificaciones
+ 
   hayJustificaciones(): boolean {
     return this.justificaciones && this.justificaciones.length > 0;
   }

@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { CookieService } from 'ngx-cookie-service';
-import { Router } from '@angular/router'; // Importar Router
+import { Router } from '@angular/router';
 import { environment } from 'src/environments/environment';
 
 
@@ -15,7 +15,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private cookieService: CookieService,
-    private router: Router // Inyectar Router
+    private router: Router 
   ) { }
 
   login(username: string, password: string): Observable<string> {
@@ -35,7 +35,7 @@ export class AuthService {
 
   logout(): void {
     this.cookieService.delete('token', '/');
-    this.router.navigate(['/auth']); // Redirigir a login
+    this.router.navigate(['/auth']);
   }
 
   getToken(): string {

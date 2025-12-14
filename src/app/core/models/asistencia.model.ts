@@ -5,7 +5,7 @@ export interface Asistencia {
   salida?: Date;
   estado?: string;
   fechaRegistro?: string;
-  usuarioId?: number; // ← Agrega si necesitas referenciar al usuario
+  usuarioId?: number;
 }
 
 export interface AsistenciaRequest {

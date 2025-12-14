@@ -1,5 +1,5 @@
 export interface UsuarioResponse {
-  id?: number; // ← Cambia a opcional
+  id?: number; 
   username: string;
   password?: string;
   nombre: string;

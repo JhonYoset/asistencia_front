@@ -1,6 +1,6 @@
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { ChartConfiguration, ChartData, ChartType } from 'chart.js';
-import { BaseChartDirective } from 'ng2-charts'; // Importar BaseChartDirective
+import { BaseChartDirective } from 'ng2-charts';
 import { AdminService } from 'src/app/services/admin.service';
 
 
@@ -15,7 +15,6 @@ export class DashboardComponent implements OnInit {
   estadisticas: any = {};
   cargando: boolean = false;
 
-  // Gráfico de barras - Asistencia por día
   public barChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     plugins: {
@@ -30,7 +29,6 @@ export class DashboardComponent implements OnInit {
     ]
   };
 
-  // Gráfico de dona - Puntualidad
   public donutChartOptions: ChartConfiguration['options'] = {
     responsive: true,
     plugins: {
@@ -66,19 +64,16 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  actualizarGraficos(data: any): void {
-    // Actualizar gráfico de barras
+  actualizarGraficos(data: any): void { 
     this.barChartData.labels = data.dias || [];
     this.barChartData.datasets[0].data = data.asistenciasPorDia || [];
-    
-    // Actualizar gráfico de dona
+     
     this.donutChartData.datasets[0].data = [
       data.puntuales || 0,
       data.tardanzas || 0,
       data.ausencias || 0
     ];
-
-    // Forzar actualización de gráficos
+ 
     if (this.chart) {
       this.chart.update();
     }

@@ -6,8 +6,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { JustificacionesComponent } from './justificaciones/justificaciones.component';
 import { ReportesComponent } from './reportes/reportes.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
-
-// Para ng2-charts 4.1.1
 import { NgChartsModule } from 'ng2-charts';
 
 @NgModule({
@@ -22,7 +20,7 @@ import { NgChartsModule } from 'ng2-charts';
     AdminRoutingModule,
     FormsModule,
     ReactiveFormsModule,
-    NgChartsModule // Usar NgChartsModule en lugar de ChartsModule
+    NgChartsModule
   ]
 })
 export class AdminModule { }

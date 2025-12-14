@@ -25,7 +25,6 @@ export class CheckinOutComponent implements OnInit {
   ngOnInit(): void {
     console.log('=== INICIO CheckinOutComponent ===');
     
-    // Verificar que el usuario esté autenticado
     if (!this.authService.isLoggedIn()) {
       console.error('❌ Usuario no autenticado');
       this.error = 'Sesión no válida. Por favor, inicia sesión nuevamente.';
@@ -33,7 +32,6 @@ export class CheckinOutComponent implements OnInit {
       return;
     }
     
-    // Verificar que el token existe
     const token = this.authService.getToken();
     console.log('Token disponible:', token ? 'SÍ' : 'NO');
     if (token) {
@@ -53,7 +51,7 @@ export class CheckinOutComponent implements OnInit {
         console.log('✅ Historial recibido:', asistencias.length, 'registros');
         
         if (asistencias && asistencias.length > 0) {
-          // Ordenar por fecha descendente (más reciente primero)
+
           asistencias.sort((a, b) => {
             const fechaA = a.entrada ? new Date(a.entrada).getTime() : 0;
             const fechaB = b.entrada ? new Date(b.entrada).getTime() : 0;
@@ -63,7 +61,6 @@ export class CheckinOutComponent implements OnInit {
           const ultimaAsistencia = asistencias[0];
           console.log('Última asistencia:', ultimaAsistencia);
           
-          // Verificar si es de hoy
           const hoy = new Date();
           const inicioHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
           const finHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate() + 1);
@@ -72,11 +69,10 @@ export class CheckinOutComponent implements OnInit {
             const fechaEntrada = new Date(ultimaAsistencia.entrada);
             
             if (fechaEntrada >= inicioHoy && fechaEntrada < finHoy) {
-              // Es de hoy
+              
               this.ultimaEntrada = fechaEntrada;
               this.ultimaSalida = ultimaAsistencia.salida ? new Date(ultimaAsistencia.salida) : undefined;
               
-              // ✅ Determinar si está en oficina
               this.enOficina = !!ultimaAsistencia.entrada && !ultimaAsistencia.salida;
               
               console.log('Estado calculado:');
@@ -84,15 +80,13 @@ export class CheckinOutComponent implements OnInit {
               console.log('  - Última entrada:', this.ultimaEntrada);
               console.log('  - Última salida:', this.ultimaSalida);
             } else {
-              // No hay asistencia de hoy
               console.log('No hay registros de hoy');
               this.enOficina = false;
               this.ultimaEntrada = undefined;
               this.ultimaSalida = undefined;
             }
           }
-        } else {
-          // No hay asistencias
+        } else {          
           console.log('No hay registros de asistencia');
           this.enOficina = false;
           this.ultimaEntrada = undefined;
@@ -107,7 +101,6 @@ export class CheckinOutComponent implements OnInit {
         console.error('   Message:', err.message);
         console.error('   Error completo:', err);
         
-        // Mensajes de error más específicos
         if (err.status === 401) {
           this.error = 'Sesión expirada. Por favor, inicia sesión nuevamente.';
           setTimeout(() => {
@@ -138,7 +131,6 @@ export class CheckinOutComponent implements OnInit {
         this.enOficina = true;
         this.cargando = false;
         
-        // Recargar estado después de 1 segundo
         setTimeout(() => {
           this.cargarEstadoActual();
         }, 1000);
@@ -173,7 +165,6 @@ export class CheckinOutComponent implements OnInit {
         this.enOficina = false;
         this.cargando = false;
         
-        // Recargar estado después de 1 segundo
         setTimeout(() => {
           this.cargarEstadoActual();
         }, 1000);
@@ -196,7 +187,6 @@ export class CheckinOutComponent implements OnInit {
   }
 
   logout(): void {
-    // Confirmar si está en oficina
     if (this.enOficina) {
       if (!confirm('Tienes un check-in activo. ¿Estás seguro de que quieres cerrar sesión sin hacer check-out?')) {
         return;

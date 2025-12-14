@@ -30,34 +30,28 @@ export class AuthService {
     }).pipe(
       tap((token: string) => {
         console.log('✅ Token recibido:', token.substring(0, 50) + '...');
-        
-        // ✅ Limpiar el token (eliminar comillas o espacios)
         const cleanToken = token.trim().replace(/^"|"$/g, '');
-        
-        // ✅ VALIDAR QUE SEA UN TOKEN JWT REAL
+
         if (!cleanToken || cleanToken.startsWith('{') || cleanToken.startsWith('<')) {
           console.error('❌ Token inválido recibido:', cleanToken);
           throw new Error('Token inválido recibido del servidor');
         }
         
-        // Validar estructura JWT (debe tener 3 partes separadas por punto)
         const parts = cleanToken.split('.');
         if (parts.length !== 3) {
           console.error('❌ Token no tiene estructura JWT válida');
           throw new Error('Token con formato inválido');
         }
-        
-        // Guardar token - ASEGURAR que se guarde correctamente
-        this.cookieService.delete('token', '/'); // Limpiar token anterior
+
+        this.cookieService.delete('token', '/'); 
         this.cookieService.set('token', cleanToken, {
-          expires: 1, // 1 día
+          expires: 1,
           path: '/',
           sameSite: 'Lax'
         });
         
         console.log('💾 Token guardado en cookie');
         
-        // Verificar inmediatamente que se guardó
         const verificacion = this.cookieService.get('token');
         if (verificacion !== cleanToken) {
           console.error('❌ Token no se guardó correctamente');
@@ -85,13 +79,11 @@ export class AuthService {
   getToken(): string {
     const token = this.cookieService.get('token');
     
-    // ✅ VALIDAR QUE EL TOKEN EXISTE Y ES VÁLIDO
     if (!token) {
       console.warn('⚠️ No hay token en cookies');
       return '';
     }
     
-    // Limpiar el token
     const cleanToken = token.trim().replace(/^"|"$/g, '');
     
     if (cleanToken.startsWith('{') || cleanToken.startsWith('<')) {
@@ -100,7 +92,6 @@ export class AuthService {
       return '';
     }
     
-    // Validar estructura JWT
     const parts = cleanToken.split('.');
     if (parts.length !== 3) {
       console.error('❌ Token no tiene estructura JWT válida');
@@ -117,7 +108,6 @@ export class AuthService {
       return false;
     }
     
-    // Verificar que no esté expirado
     try {
       const payload = this.decodeToken(token);
       if (payload && payload.exp) {

@@ -152,16 +152,13 @@ export class UsuariosComponent implements OnInit {
       username: usuario.username,
       nombreCompleto: usuario.nombreCompleto,
       rol: usuario.rol,
-      password: '' // No mostrar la contraseña
+      password: '' 
     });
     
-    // Hacer que la contraseña sea opcional en modo edición
     this.formUsuario.get('password')?.clearValidators();
     this.formUsuario.get('password')?.updateValueAndValidity();
     
     this.mensaje = 'Modo edición activado. Cambie los datos y haga clic en Actualizar';
-    
-    // Scroll al formulario
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -170,7 +167,6 @@ export class UsuariosComponent implements OnInit {
     this.usuarioEditandoId = undefined;
     this.formUsuario.reset({ rol: 'EMPLEADO' });
     
-    // Restaurar validación de contraseña
     this.formUsuario.get('password')?.setValidators([Validators.required, Validators.minLength(5)]);
     this.formUsuario.get('password')?.updateValueAndValidity();
     
@@ -229,9 +225,7 @@ export class UsuariosComponent implements OnInit {
     
     const date = new Date(fecha);
     return isNaN(date.getTime()) ? 'Fecha inválida' : date.toLocaleDateString('es-ES');
-  }
-
-  // Getters para validaciones del formulario
+  } 
   get usernameInvalido(): boolean {
     const control = this.formUsuario.get('username');
     return !!(control?.invalid && control?.touched);

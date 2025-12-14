@@ -25,7 +25,6 @@ export class AsistenciaService {
   }
 
   getReportePorFechas(desde: string, hasta: string): Observable<Asistencia[]> {
-    // ✅ MEJORAR EL ENVÍO DE PARÁMETROS
     let params = new HttpParams();
     
     if (desde) {

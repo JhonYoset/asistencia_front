@@ -11,7 +11,6 @@ import { InjectSessionInterceptor } from '@core/interceptors/inject-session.inte
 import { GlobalErrorHandler } from '@shared/global/global-error-handler';
 import { HttpErrorInterceptor } from '@core/interceptors/http-error.interceptor';
 import { SharedModule } from '@shared/Shared.module';
- // Importar SharedModule
 
 @NgModule({
   declarations: [
@@ -24,7 +23,7 @@ import { SharedModule } from '@shared/Shared.module';
     FormsModule,
     AuthModule,
     HttpClientModule,
-    SharedModule // Agregar aquí
+    SharedModule
   ],
   providers: [
     CookieService,

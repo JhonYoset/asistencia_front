@@ -23,7 +23,7 @@ export class InjectSessionInterceptor implements HttpInterceptor {
 
   intercept(request: HttpRequest<unknown>, next: HttpHandler): Observable<HttpEvent<unknown>> {
     try {
-      // No agregar token a las peticiones de login
+      
       if (request.url.includes('/auth/login')) {
         console.log('📤 Petición de login - sin token');
         return next.handle(request);
@@ -35,7 +35,6 @@ export class InjectSessionInterceptor implements HttpInterceptor {
         console.log('📤 Agregando token a petición:', request.url);
         console.log('   Token (primeros 50 caracteres):', token.substring(0, 50) + '...');
         
-        // Clonar la petición y agregar el header de autorización
         const newRequest = request.clone({
           setHeaders: {
             'Authorization': `Bearer ${token}`,
@@ -43,7 +42,6 @@ export class InjectSessionInterceptor implements HttpInterceptor {
           }
         });
         
-        // Manejar errores 401
         return next.handle(newRequest).pipe(
           catchError((error: HttpErrorResponse) => {
             if (error.status === 401) {
@@ -51,7 +49,7 @@ export class InjectSessionInterceptor implements HttpInterceptor {
               console.error('   URL:', request.url);
               console.error('   Token usado:', token.substring(0, 50) + '...');
               
-              // Limpiar sesión y redirigir a login
+              
               this.authService.logout();
             }
             return throwError(() => error);
@@ -60,7 +58,6 @@ export class InjectSessionInterceptor implements HttpInterceptor {
       } else {
         console.warn('⚠️ No hay token válido disponible para:', request.url);
         
-        // Si la ruta requiere autenticación pero no hay token, redirigir a login
         if (request.url.includes('/api/')) {
           console.error('❌ Intento de acceder a ruta protegida sin token');
           this.router.navigate(['/auth']);
