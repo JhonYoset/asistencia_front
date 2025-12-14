@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { environment } from '../../environments/environment';
 import { Asistencia } from '../core/models/asistencia.model';
@@ -8,7 +8,7 @@ import { Asistencia } from '../core/models/asistencia.model';
   providedIn: 'root'
 })
 export class AsistenciaService {
-  private readonly URL = `${environment.api}/api/asistencia`; // ✅ AGREGADO /api/
+  private readonly URL = `${environment.api}/api/asistencia`;
 
   constructor(private http: HttpClient) { }
 
@@ -25,8 +25,21 @@ export class AsistenciaService {
   }
 
   getReportePorFechas(desde: string, hasta: string): Observable<Asistencia[]> {
+    // ✅ MEJORAR EL ENVÍO DE PARÁMETROS
+    let params = new HttpParams();
+    
+    if (desde) {
+      params = params.set('desde', desde);
+    }
+    
+    if (hasta) {
+      params = params.set('hasta', hasta);
+    }
+    
+    console.log('Solicitando reporte con params:', params.toString());
+    
     return this.http.get<Asistencia[]>(`${this.URL}/reportes/fechas`, {
-      params: { desde, hasta }
+      params: params
     });
   }
 
