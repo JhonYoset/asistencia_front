@@ -4,7 +4,7 @@
   <!-- Tarjetas de resumen -->
   <div class="row mb-4">
     <div class="col-md-3">
-      <div class="card text-white bg-primary">
+      <div class="card text-white bg-success">
         <div class="card-body">
           <h5 class="card-title">Total Empleados</h5>
           <p class="card-text display-6">{{ estadisticas.totalEmpleados || 0 }}</p>
@@ -20,7 +20,7 @@
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card text-white bg-warning">
+      <div class="card text-white bg-success">
         <div class="card-body">
           <h5 class="card-title">Justificaciones Pendientes</h5>
           <p class="card-text display-6">{{ estadisticas.justificacionesPendientes || 0 }}</p>
@@ -28,7 +28,7 @@
       </div>
     </div>
     <div class="col-md-3">
-      <div class="card text-white bg-info">
+      <div class="card text-white bg-success">
         <div class="card-body">
           <h5 class="card-title">% Puntualidad</h5>
           <p class="card-text display-6">{{ estadisticas.porcentajePuntualidad || 0 }}%</p>
@@ -77,11 +77,11 @@
           <h5>Acciones Rápidas</h5>
         </div>
         <div class="card-body">
-          <div class="d-flex gap-2">
-            <button class="btn btn-primary" routerLink="/admin/justificaciones">
+          <div class="d-flex justify-content-around gap-4">
+            <button class="btn btn-primary me-4" routerLink="/admin/justificaciones">
               <i class="fas fa-file-signature"></i> Gestionar Justificaciones
             </button>
-            <button class="btn btn-success" routerLink="/admin/reportes">
+            <button class="btn btn-success me-4" routerLink="/admin/reportes">
               <i class="fas fa-chart-bar"></i> Ver Reportes
             </button>
             <button class="btn btn-info" routerLink="/admin/usuarios">

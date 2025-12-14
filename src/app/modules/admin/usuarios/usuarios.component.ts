@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { AdminService } from 'src/app/services/admin.service';
-import { Usuario } from '@core/models/usuario.model'; // Solo Usuario
+import { Usuario } from '@core/models/usuario.model';
 
 @Component({
   selector: 'app-usuarios',
@@ -10,9 +10,9 @@ import { Usuario } from '@core/models/usuario.model'; // Solo Usuario
 })
 export class UsuariosComponent implements OnInit {
   formUsuario = new FormGroup({
-    username: new FormControl('', [Validators.required]),
+    username: new FormControl('', [Validators.required, Validators.minLength(3)]),
     password: new FormControl('', [Validators.required, Validators.minLength(5)]),
-    nombre: new FormControl('', [Validators.required]),
+    nombreCompleto: new FormControl('', [Validators.required, Validators.minLength(3)]),
     rol: new FormControl('EMPLEADO', [Validators.required])
   });
 
@@ -21,9 +21,12 @@ export class UsuariosComponent implements OnInit {
   mensaje = '';
   error = '';
   
-  usuarios: Usuario[] = []; // Solo Usuario
-  usuariosFiltrados: Usuario[] = []; // Solo Usuario
+  usuarios: Usuario[] = [];
+  usuariosFiltrados: Usuario[] = [];
   filtroBusqueda: string = '';
+  
+  modoEdicion = false;
+  usuarioEditandoId?: number;
 
   constructor(private adminService: AdminService) {}
 
@@ -47,7 +50,6 @@ export class UsuariosComponent implements OnInit {
     });
   }
 
-  // El resto del código se mantiene igual...
   filtrarUsuarios(): void {
     if (!this.filtroBusqueda.trim()) {
       this.usuariosFiltrados = [...this.usuarios];
@@ -57,7 +59,7 @@ export class UsuariosComponent implements OnInit {
     const busqueda = this.filtroBusqueda.toLowerCase().trim();
     this.usuariosFiltrados = this.usuarios.filter(usuario => 
       usuario.username.toLowerCase().includes(busqueda) ||
-      (usuario.nombre && usuario.nombre.toLowerCase().includes(busqueda)) ||
+      usuario.nombreCompleto.toLowerCase().includes(busqueda) ||
       usuario.rol.toLowerCase().includes(busqueda)
     );
   }
@@ -71,7 +73,7 @@ export class UsuariosComponent implements OnInit {
       const usuario: Usuario = {
         username: this.formUsuario.value.username!.trim(),
         password: this.formUsuario.value.password!,
-        nombre: this.formUsuario.value.nombre!.trim() || this.formUsuario.value.username!.trim(),
+        nombreCompleto: this.formUsuario.value.nombreCompleto!.trim(),
         rol: this.formUsuario.value.rol!.toUpperCase(),
         enabled: true
       };
@@ -83,7 +85,9 @@ export class UsuariosComponent implements OnInit {
           this.mensaje = msg;
           this.formUsuario.reset({ rol: 'EMPLEADO' });
           this.cargando = false;
-          this.cargarUsuarios(); // Recargar lista
+          this.modoEdicion = false;
+          this.usuarioEditandoId = undefined;
+          this.cargarUsuarios();
         },
         error: (err) => {
           console.error('Error detallado:', err);
@@ -96,7 +100,82 @@ export class UsuariosComponent implements OnInit {
       });
     } else {
       this.error = 'Por favor complete todos los campos requeridos';
+      this.marcarCamposComoTocados();
     }
+  }
+
+  actualizarUsuario() {
+    if (!this.usuarioEditandoId) {
+      this.error = 'No hay usuario en edición';
+      return;
+    }
+
+    if (this.formUsuario.valid) {
+      this.cargando = true;
+      this.mensaje = '';
+      this.error = '';
+
+      const usuario: Usuario = {
+        username: this.formUsuario.value.username!.trim(),
+        password: this.formUsuario.value.password || '',
+        nombreCompleto: this.formUsuario.value.nombreCompleto!.trim(),
+        rol: this.formUsuario.value.rol!.toUpperCase()
+      };
+
+      this.adminService.actualizarUsuario(this.usuarioEditandoId, usuario).subscribe({
+        next: (msg) => {
+          this.mensaje = msg;
+          this.formUsuario.reset({ rol: 'EMPLEADO' });
+          this.cargando = false;
+          this.modoEdicion = false;
+          this.usuarioEditandoId = undefined;
+          this.cargarUsuarios();
+        },
+        error: (err) => {
+          this.error = 'Error al actualizar usuario: ' + (err.error?.mensaje || 'Intente nuevamente');
+          this.cargando = false;
+        }
+      });
+    } else {
+      this.error = 'Por favor complete todos los campos requeridos';
+      this.marcarCamposComoTocados();
+    }
+  }
+
+  editarUsuario(usuario: Usuario) {
+    console.log('Editar usuario:', usuario);
+    
+    this.modoEdicion = true;
+    this.usuarioEditandoId = usuario.id;
+    
+    this.formUsuario.patchValue({
+      username: usuario.username,
+      nombreCompleto: usuario.nombreCompleto,
+      rol: usuario.rol,
+      password: '' // No mostrar la contraseña
+    });
+    
+    // Hacer que la contraseña sea opcional en modo edición
+    this.formUsuario.get('password')?.clearValidators();
+    this.formUsuario.get('password')?.updateValueAndValidity();
+    
+    this.mensaje = 'Modo edición activado. Cambie los datos y haga clic en Actualizar';
+    
+    // Scroll al formulario
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  cancelarEdicion() {
+    this.modoEdicion = false;
+    this.usuarioEditandoId = undefined;
+    this.formUsuario.reset({ rol: 'EMPLEADO' });
+    
+    // Restaurar validación de contraseña
+    this.formUsuario.get('password')?.setValidators([Validators.required, Validators.minLength(5)]);
+    this.formUsuario.get('password')?.updateValueAndValidity();
+    
+    this.mensaje = '';
+    this.error = '';
   }
 
   activarUsuario(id: number | undefined) {
@@ -104,7 +183,7 @@ export class UsuariosComponent implements OnInit {
       this.adminService.activarUsuario(id).subscribe({
         next: (msg) => {
           this.mensaje = msg;
-          this.cargarUsuarios(); // Recargar lista
+          this.cargarUsuarios();
         },
         error: (err) => {
           this.error = 'Error al activar usuario: ' + (err.error?.mensaje || 'Intente nuevamente');
@@ -118,7 +197,7 @@ export class UsuariosComponent implements OnInit {
       this.adminService.desactivarUsuario(id).subscribe({
         next: (msg) => {
           this.mensaje = msg;
-          this.cargarUsuarios(); // Recargar lista
+          this.cargarUsuarios();
         },
         error: (err) => {
           this.error = 'Error al desactivar usuario: ' + (err.error?.mensaje || 'Intente nuevamente');
@@ -127,17 +206,10 @@ export class UsuariosComponent implements OnInit {
     }
   }
 
-  editarUsuario(usuario: Usuario) {
-    console.log('Editar usuario:', usuario);
-    
-    this.formUsuario.patchValue({
-      username: usuario.username,
-      nombre: usuario.nombre || usuario.username,
-      rol: usuario.rol,
-      password: ''
+  private marcarCamposComoTocados() {
+    Object.keys(this.formUsuario.controls).forEach(key => {
+      this.formUsuario.get(key)?.markAsTouched();
     });
-    
-    this.mensaje = 'Modo edición activado. Cambie los datos y haga clic en Actualizar';
   }
 
   getTotalUsuarios(): number {
@@ -157,5 +229,21 @@ export class UsuariosComponent implements OnInit {
     
     const date = new Date(fecha);
     return isNaN(date.getTime()) ? 'Fecha inválida' : date.toLocaleDateString('es-ES');
+  }
+
+  // Getters para validaciones del formulario
+  get usernameInvalido(): boolean {
+    const control = this.formUsuario.get('username');
+    return !!(control?.invalid && control?.touched);
+  }
+
+  get passwordInvalido(): boolean {
+    const control = this.formUsuario.get('password');
+    return !!(control?.invalid && control?.touched);
+  }
+
+  get nombreCompletoInvalido(): boolean {
+    const control = this.formUsuario.get('nombreCompleto');
+    return !!(control?.invalid && control?.touched);
   }
 }

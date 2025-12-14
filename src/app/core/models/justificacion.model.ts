@@ -1,11 +1,12 @@
 export interface Justificacion {
   id?: number;
-  username?: string;
-  fecha: Date;
-  tipo: 'TARDANZA' | 'AUSENCIA';
+  username: string;
+  nombreCompleto?: string;
+  fecha: Date | string;
+  tipo: string;
   motivo: string;
-  estado?: string;
-  fechaSolicitud?: string;
+  estado: string;
+  fechaSolicitud: string;
 }
 
 export interface JustificacionRequest {

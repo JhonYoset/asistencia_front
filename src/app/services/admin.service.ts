@@ -19,8 +19,8 @@ export class AdminService {
   }
 
   getUsuarios(): Observable<Usuario[]> {
-  return this.http.get<Usuario[]>(`${this.URL}/usuarios`);
-}
+    return this.http.get<Usuario[]>(`${this.URL}/usuarios`);
+  }
 
   getUsuarioPorId(id: number): Observable<Usuario> {
     return this.http.get<Usuario>(`${this.URL}/usuarios/${id}`);

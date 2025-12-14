@@ -2,7 +2,7 @@ export interface Usuario {
   id?: number;
   username: string;
   password?: string;
-  nombre: string;
+  nombreCompleto: string;
   rol: string;
   enabled?: boolean;
   fechaCreacion?: Date | string;

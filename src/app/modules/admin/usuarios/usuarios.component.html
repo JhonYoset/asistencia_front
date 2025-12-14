@@ -12,29 +12,53 @@
     </div>
     
     <div class="card-body">
-      <!-- Formulario de creación -->
+      <!-- Formulario de creación/edición -->
       <div class="mb-5">
         <h5 class="mb-3">
-          <i class="fas fa-user-plus me-2 text-success"></i>Crear Nuevo Usuario
+          <i [ngClass]="modoEdicion ? 'fas fa-edit text-warning' : 'fas fa-user-plus text-success'" class="me-2"></i>
+          {{ modoEdicion ? 'Editar Usuario' : 'Crear Nuevo Usuario' }}
         </h5>
-        <form [formGroup]="formUsuario" (ngSubmit)="crearUsuario()" class="row g-3">
+        
+        <form [formGroup]="formUsuario" (ngSubmit)="modoEdicion ? actualizarUsuario() : crearUsuario()" class="row g-3">
           <div class="col-md-3">
             <label class="form-label fw-bold">Username *</label>
-            <input formControlName="username" class="form-control" 
-                   placeholder="Ej: juan.perez">
+            <input 
+              formControlName="username" 
+              class="form-control" 
+              [class.is-invalid]="usernameInvalido"
+              placeholder="Ej: juan.perez">
+            <div class="invalid-feedback" *ngIf="usernameInvalido">
+              Username debe tener al menos 3 caracteres
+            </div>
             <small class="text-muted">Sin espacios, único en el sistema</small>
           </div>
           
           <div class="col-md-3">
-            <label class="form-label fw-bold">Contraseña *</label>
-            <input formControlName="password" type="password" class="form-control" 
-                   placeholder="Mínimo 5 caracteres">
+            <label class="form-label fw-bold">
+              Contraseña {{ modoEdicion ? '' : '*' }}
+            </label>
+            <input 
+              formControlName="password" 
+              type="password" 
+              class="form-control" 
+              [class.is-invalid]="passwordInvalido"
+              [placeholder]="modoEdicion ? 'Dejar vacío para no cambiar' : 'Mínimo 5 caracteres'">
+            <div class="invalid-feedback" *ngIf="passwordInvalido">
+              Contraseña debe tener al menos 5 caracteres
+            </div>
+            <small class="text-muted" *ngIf="modoEdicion">Dejar vacío para mantener la actual</small>
           </div>
           
           <div class="col-md-3">
             <label class="form-label fw-bold">Nombre Completo *</label>
-            <input formControlName="nombre" class="form-control" 
-                   placeholder="Ej: Juan Pérez López">
+            <input 
+              formControlName="nombreCompleto" 
+              class="form-control" 
+              [class.is-invalid]="nombreCompletoInvalido"
+              placeholder="Ej: Juan Pérez López">
+            <div class="invalid-feedback" *ngIf="nombreCompletoInvalido">
+              Nombre completo debe tener al menos 3 caracteres
+            </div>
           </div>
           
           <div class="col-md-2">
@@ -46,13 +70,23 @@
           </div>
           
           <div class="col-md-1 d-flex align-items-end">
-            <button type="submit" class="btn btn-success w-100" 
-                    [disabled]="!formUsuario.valid || cargando">
+            <button 
+              type="submit" 
+              [ngClass]="modoEdicion ? 'btn-warning' : 'btn-success'"
+              class="btn w-100" 
+              [disabled]="!formUsuario.valid || cargando">
               <span *ngIf="cargando" class="spinner-border spinner-border-sm me-1"></span>
-              <i *ngIf="!cargando" class="fas fa-plus"></i>
+              <i *ngIf="!cargando" [ngClass]="modoEdicion ? 'fas fa-save' : 'fas fa-plus'"></i>
             </button>
           </div>
         </form>
+
+        <!-- Botón cancelar en modo edición -->
+        <div *ngIf="modoEdicion" class="mt-2">
+          <button class="btn btn-outline-secondary" (click)="cancelarEdicion()">
+            <i class="fas fa-times me-2"></i> Cancelar Edición
+          </button>
+        </div>
         
         <div *ngIf="mensaje" class="alert alert-success alert-dismissible fade show mt-3">
           <i class="fas fa-check-circle me-2"></i>
@@ -81,7 +115,7 @@
               <input type="text" class="form-control" 
                      [(ngModel)]="filtroBusqueda" 
                      (input)="filtrarUsuarios()"
-                     placeholder="Buscar usuario...">
+                     placeholder="Buscar por username o nombre...">
             </div>
           </div>
         </div>
@@ -97,11 +131,12 @@
             <thead class="table-dark">
               <tr>
                 <th>ID</th>
-                <th>Usuario</th>
-                <th>Nombre</th>
+                <th>Username</th>
+                <th>Nombre Completo</th>
                 <th>Rol</th>
                 <th>Estado</th>
                 <th>Asistencias</th>
+                <th>Fecha Creación</th>
                 <th>Acciones</th>
               </tr>
             </thead>
@@ -109,39 +144,51 @@
               <tr *ngFor="let usuario of usuariosFiltrados">
                 <td>{{ usuario.id || 'N/A' }}</td>
                 <td><strong>{{ usuario.username }}</strong></td>
-                <td>{{ usuario.nombre || 'No especificado' }}</td>
+                <td>
+                  <i class="me-2 text-primary"></i>
+                  {{ usuario.nombreCompleto }}
+                </td>
                 <td>
                   <span [ngClass]="{
-                    'badge bg-danger': usuario.rol === 'ADMIN',
-                    'badge bg-info': usuario.rol === 'EMPLEADO'
+                    'text-white text-center': usuario.rol === 'ADMIN',
+                    'text-dark text-center': usuario.rol === 'EMPLEADO'
                   }">
                     {{ usuario.rol }}
                   </span>
                 </td>
                 <td>
                   <span [ngClass]="{
-                    'badge bg-success': usuario.enabled,
-                    'badge bg-secondary': !usuario.enabled
+                    'text-white text-center': usuario.enabled,
+                    'text-dark text-center': !usuario.enabled
                   }">
                     {{ usuario.enabled ? 'Activo' : 'Inactivo' }}
                   </span>
                 </td>
                 <td>
-                  <span class="badge bg-primary">
+                  <span class="text-white text-center">
                     {{ usuario.totalAsistencias || 0 }}
                   </span>
                 </td>
                 <td>
+                  <small>{{ formatearFecha(usuario.fechaCreacion) }}</small>
+                </td>
+                <td>
                   <div class="btn-group btn-group-sm" role="group">
-                    <button class="btn btn-outline-warning" title="Editar" (click)="editarUsuario(usuario)">
+                    <button class="btn btn-outline-warning" 
+                            title="Editar" 
+                            (click)="editarUsuario(usuario)">
                       <i class="fas fa-edit"></i>
                     </button>
-                    <button *ngIf="usuario.enabled" class="btn btn-outline-danger" 
-                            title="Desactivar" (click)="desactivarUsuario(usuario.id)">
+                    <button *ngIf="usuario.enabled" 
+                            class="btn btn-outline-danger" 
+                            title="Desactivar" 
+                            (click)="desactivarUsuario(usuario.id)">
                       <i class="fas fa-user-slash"></i>
                     </button>
-                    <button *ngIf="!usuario.enabled" class="btn btn-outline-success" 
-                            title="Activar" (click)="activarUsuario(usuario.id)">
+                    <button *ngIf="!usuario.enabled" 
+                            class="btn btn-outline-success" 
+                            title="Activar" 
+                            (click)="activarUsuario(usuario.id)">
                       <i class="fas fa-user-check"></i>
                     </button>
                   </div>

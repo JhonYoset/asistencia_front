@@ -8,45 +8,29 @@ import { Justificacion } from '../core/models/justificacion.model';
   providedIn: 'root'
 })
 export class JustificacionService {
-  private readonly URL = `${environment.api}/api/asistencia`;
+  private readonly URL = `${environment.api}/api`;
 
   constructor(private http: HttpClient) { }
 
-  solicitarJustificacion(justificacion: any): Observable<Justificacion> {
-    // ✅ CONVERTIR FECHA A FORMATO STRING yyyy-MM-dd
-    const payload = {
-      fecha: this.formatearFecha(justificacion.fecha),
-      tipo: justificacion.tipo,
-      motivo: justificacion.motivo
-    };
-    
-    console.log('Payload a enviar:', payload);
-    
-    return this.http.post<Justificacion>(`${this.URL}/justificaciones_solicitud`, payload);
+  // Solicitar nueva justificación (empleado)
+  solicitarJustificacion(data: any): Observable<any> {
+    return this.http.post(`${this.URL}/asistencia/justificacion`, data);
   }
 
-  aprobarJustificacion(id: number): Observable<string> {
-    return this.http.put(`${this.URL}/justificaciones_aprobacion/${id}`, {}, { responseType: 'text' });
-  }
-
+  // Obtener justificaciones pendientes (admin) - ACTUALIZADO CON TIPO CORRECTO
   getJustificacionesPendientes(): Observable<Justificacion[]> {
-    return this.http.get<Justificacion[]>(`${environment.api}/api/admin/justificaciones/pendientes`);
+    return this.http.get<Justificacion[]>(`${this.URL}/admin/justificaciones/pendientes`);
   }
 
-  // ✅ MÉTODO AUXILIAR PARA FORMATEAR FECHA
-  private formatearFecha(fecha: Date | string): string {
-    if (typeof fecha === 'string') {
-      // Si ya es string en formato yyyy-MM-dd, devolverlo tal cual
-      if (/^\d{4}-\d{2}-\d{2}$/.test(fecha)) {
-        return fecha;
-      }
-      fecha = new Date(fecha);
-    }
-    
-    const year = fecha.getFullYear();
-    const month = String(fecha.getMonth() + 1).padStart(2, '0');
-    const day = String(fecha.getDate()).padStart(2, '0');
-    
-    return `${year}-${month}-${day}`;
+  // Aprobar justificación (admin)
+  aprobarJustificacion(id: number): Observable<string> {
+    return this.http.post(`${this.URL}/asistencia/justificacion/${id}/aprobar`, {}, {
+      responseType: 'text'
+    });
+  }
+
+  // Obtener historial de justificaciones del usuario actual
+  getMisJustificaciones(): Observable<Justificacion[]> {
+    return this.http.get<Justificacion[]>(`${this.URL}/asistencia/mis-justificaciones`);
   }
 }

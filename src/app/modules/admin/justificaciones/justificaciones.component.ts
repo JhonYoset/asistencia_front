@@ -23,15 +23,17 @@ export class JustificacionesComponent implements OnInit {
     this.cargando = true;
     this.mensaje = '';
     this.error = '';
-
-    // Temporal: usar historial o implementar endpoint real
-    // Aquí puedes usar un mock o el endpoint que tengas
+    
+    console.log('=== Cargando justificaciones pendientes ===');
+    
     this.justificacionService.getJustificacionesPendientes().subscribe({
       next: (data) => {
+        console.log('✅ Justificaciones recibidas:', data);
         this.justificaciones = data;
         this.cargando = false;
       },
       error: (err) => {
+        console.error('❌ Error al cargar justificaciones:', err);
         this.error = 'No se pudieron cargar las justificaciones';
         this.cargando = false;
       }
@@ -39,14 +41,40 @@ export class JustificacionesComponent implements OnInit {
   }
 
   aprobar(id: number) {
-    this.justificacionService.aprobarJustificacion(id).subscribe({
-      next: (msg) => {
-        this.mensaje = msg;
-        this.cargarPendientes(); // Recargar lista
-      },
-      error: (err) => {
-        this.error = err.error?.mensaje || 'Error al aprobar';
-      }
-    });
+    if (!id) {
+      this.error = 'ID de justificación inválido';
+      return;
+    }
+
+    if (confirm('¿Está seguro de aprobar esta justificación?')) {
+      console.log('=== Aprobando justificación ID:', id, '===');
+      
+      this.justificacionService.aprobarJustificacion(id).subscribe({
+        next: (msg) => {
+          console.log('✅ Justificación aprobada:', msg);
+          this.mensaje = msg;
+          this.cargarPendientes(); // Recargar lista
+          
+          // Limpiar mensaje después de 3 segundos
+          setTimeout(() => {
+            this.mensaje = '';
+          }, 3000);
+        },
+        error: (err) => {
+          console.error('❌ Error al aprobar:', err);
+          this.error = err.error?.mensaje || 'Error al aprobar la justificación';
+          
+          // Limpiar error después de 3 segundos
+          setTimeout(() => {
+            this.error = '';
+          }, 3000);
+        }
+      });
+    }
+  }
+
+  // Helper para verificar si hay justificaciones
+  hayJustificaciones(): boolean {
+    return this.justificaciones && this.justificaciones.length > 0;
   }
 }
