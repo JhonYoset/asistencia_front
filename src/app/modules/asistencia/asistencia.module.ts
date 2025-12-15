@@ -5,12 +5,14 @@ import { AsistenciaRoutingModule } from './asistencia-routing.module';
 import { CheckinOutComponent } from './checkin-out/checkin-out.component';
 import { HistorialComponent } from './historial/historial.component';
 import { JustificacionSolicitudComponent } from './justificacion-solicitud/justificacion-solicitud.component';
+import { AsistenciaPageComponent } from './pages/asistencia-page/asistencia-page.component';
 
 @NgModule({
   declarations: [
     CheckinOutComponent,
     HistorialComponent,
-    JustificacionSolicitudComponent
+    JustificacionSolicitudComponent,
+    AsistenciaPageComponent
   ],
   imports: [
     CommonModule,

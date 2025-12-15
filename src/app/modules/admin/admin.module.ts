@@ -7,13 +7,15 @@ import { JustificacionesComponent } from './justificaciones/justificaciones.comp
 import { ReportesComponent } from './reportes/reportes.component';
 import { UsuariosComponent } from './usuarios/usuarios.component';
 import { NgChartsModule } from 'ng2-charts';
+import { AdminPageComponent } from './pages/admin-page/admin-page.component';
 
 @NgModule({
   declarations: [
     DashboardComponent,
     JustificacionesComponent,
     ReportesComponent,
-    UsuariosComponent
+    UsuariosComponent,
+    AdminPageComponent
   ],
   imports: [
     CommonModule,
