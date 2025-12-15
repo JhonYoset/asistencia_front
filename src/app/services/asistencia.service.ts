@@ -34,9 +34,7 @@ export class AsistenciaService {
     if (hasta) {
       params = params.set('hasta', hasta);
     }
-    
-    console.log('Solicitando reporte con params:', params.toString());
-    
+        
     return this.http.get<Asistencia[]>(`${this.URL}/reportes/fechas`, {
       params: params
     });

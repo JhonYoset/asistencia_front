@@ -24,16 +24,13 @@ export class JustificacionesComponent implements OnInit {
     this.mensaje = '';
     this.error = '';
     
-    console.log('=== Cargando justificaciones pendientes ===');
     
     this.justificacionService.getJustificacionesPendientes().subscribe({
       next: (data) => {
-        console.log('✅ Justificaciones recibidas:', data);
         this.justificaciones = data;
         this.cargando = false;
       },
       error: (err) => {
-        console.error('❌ Error al cargar justificaciones:', err);
         this.error = 'No se pudieron cargar las justificaciones';
         this.cargando = false;
       }
@@ -47,11 +44,9 @@ export class JustificacionesComponent implements OnInit {
     }
 
     if (confirm('¿Está seguro de aprobar esta justificación?')) {
-      console.log('=== Aprobando justificación ID:', id, '===');
       
       this.justificacionService.aprobarJustificacion(id).subscribe({
         next: (msg) => {
-          console.log('✅ Justificación aprobada:', msg);
           this.mensaje = msg;
           this.cargarPendientes();  
           setTimeout(() => {
@@ -59,7 +54,6 @@ export class JustificacionesComponent implements OnInit {
           }, 3000);
         },
         error: (err) => {
-          console.error('❌ Error al aprobar:', err);
           this.error = err.error?.mensaje || 'Error al aprobar la justificación';
           
           setTimeout(() => {

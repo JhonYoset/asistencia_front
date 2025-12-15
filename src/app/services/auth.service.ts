@@ -21,25 +21,20 @@ export class AuthService {
     const params = new HttpParams()
       .set('username', username)
       .set('password', password);
-    
-    console.log('🔐 Intentando login con:', { username, url: `${this.URL}/auth/login` });
-    
+        
     return this.http.post(`${this.URL}/auth/login`, {}, { 
       params, 
       responseType: 'text' 
     }).pipe(
       tap((token: string) => {
-        console.log('✅ Token recibido:', token.substring(0, 50) + '...');
         const cleanToken = token.trim().replace(/^"|"$/g, '');
 
         if (!cleanToken || cleanToken.startsWith('{') || cleanToken.startsWith('<')) {
-          console.error('❌ Token inválido recibido:', cleanToken);
           throw new Error('Token inválido recibido del servidor');
         }
         
         const parts = cleanToken.split('.');
         if (parts.length !== 3) {
-          console.error('❌ Token no tiene estructura JWT válida');
           throw new Error('Token con formato inválido');
         }
 
@@ -50,28 +45,18 @@ export class AuthService {
           sameSite: 'Lax'
         });
         
-        console.log('💾 Token guardado en cookie');
-        
         const verificacion = this.cookieService.get('token');
         if (verificacion !== cleanToken) {
-          console.error('❌ Token no se guardó correctamente');
           throw new Error('Error al guardar token');
         }
-        console.log('✅ Token verificado en cookie');
       }),
       catchError((error: HttpErrorResponse) => {
-        console.error('❌ Error en login:', {
-          status: error.status,
-          message: error.message,
-          error: error.error
-        });
         return throwError(() => error);
       })
     );
   }
 
   logout(): void {
-    console.log('🚪 Cerrando sesión...');
     this.cookieService.delete('token', '/');
     this.router.navigate(['/auth']);
   }
@@ -80,21 +65,18 @@ export class AuthService {
     const token = this.cookieService.get('token');
     
     if (!token) {
-      console.warn('⚠️ No hay token en cookies');
       return '';
     }
     
     const cleanToken = token.trim().replace(/^"|"$/g, '');
     
     if (cleanToken.startsWith('{') || cleanToken.startsWith('<')) {
-      console.error('❌ Token corrupto detectado:', cleanToken.substring(0, 50));
       this.cookieService.delete('token', '/');
       return '';
     }
     
     const parts = cleanToken.split('.');
     if (parts.length !== 3) {
-      console.error('❌ Token no tiene estructura JWT válida');
       this.cookieService.delete('token', '/');
       return '';
     }
@@ -113,7 +95,6 @@ export class AuthService {
       if (payload && payload.exp) {
         const now = Math.floor(Date.now() / 1000);
         if (payload.exp < now) {
-          console.warn('⚠️ Token expirado');
           this.logout();
           return false;
         }

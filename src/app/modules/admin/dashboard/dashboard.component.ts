@@ -58,7 +58,6 @@ export class DashboardComponent implements OnInit {
         this.cargando = false;
       },
       error: (err) => {
-        console.error('Error al cargar estadísticas:', err);
         this.cargando = false;
       }
     });

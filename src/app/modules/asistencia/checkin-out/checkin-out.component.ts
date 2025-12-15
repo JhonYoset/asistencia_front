@@ -23,32 +23,24 @@ export class CheckinOutComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
-    console.log('=== INICIO CheckinOutComponent ===');
     
     if (!this.authService.isLoggedIn()) {
-      console.error('❌ Usuario no autenticado');
       this.error = 'Sesión no válida. Por favor, inicia sesión nuevamente.';
       this.router.navigate(['/auth']);
       return;
     }
     
     const token = this.authService.getToken();
-    console.log('Token disponible:', token ? 'SÍ' : 'NO');
-    if (token) {
-      console.log('Token (primeros 50 caracteres):', token.substring(0, 50) + '...');
-    }
-    
+       
     this.cargarEstadoActual();
   }
 
   cargarEstadoActual(): void {
-    console.log('=== Cargando estado actual ===');
     this.cargando = true;
     this.error = '';
     
     this.asistenciaService.getHistorial().subscribe({
       next: (asistencias) => {
-        console.log('✅ Historial recibido:', asistencias.length, 'registros');
         
         if (asistencias && asistencias.length > 0) {
 
@@ -59,7 +51,6 @@ export class CheckinOutComponent implements OnInit {
           });
           
           const ultimaAsistencia = asistencias[0];
-          console.log('Última asistencia:', ultimaAsistencia);
           
           const hoy = new Date();
           const inicioHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
@@ -75,19 +66,13 @@ export class CheckinOutComponent implements OnInit {
               
               this.enOficina = !!ultimaAsistencia.entrada && !ultimaAsistencia.salida;
               
-              console.log('Estado calculado:');
-              console.log('  - En oficina:', this.enOficina);
-              console.log('  - Última entrada:', this.ultimaEntrada);
-              console.log('  - Última salida:', this.ultimaSalida);
             } else {
-              console.log('No hay registros de hoy');
               this.enOficina = false;
               this.ultimaEntrada = undefined;
               this.ultimaSalida = undefined;
             }
           }
         } else {          
-          console.log('No hay registros de asistencia');
           this.enOficina = false;
           this.ultimaEntrada = undefined;
           this.ultimaSalida = undefined;
@@ -96,10 +81,6 @@ export class CheckinOutComponent implements OnInit {
         this.cargando = false;
       },
       error: (err) => {
-        console.error('❌ Error al cargar historial:', err);
-        console.error('   Status:', err.status);
-        console.error('   Message:', err.message);
-        console.error('   Error completo:', err);
         
         if (err.status === 401) {
           this.error = 'Sesión expirada. Por favor, inicia sesión nuevamente.';
@@ -119,14 +100,12 @@ export class CheckinOutComponent implements OnInit {
   }
 
   realizarCheckin(): void {
-    console.log('=== INICIANDO CHECK-IN ===');
     this.cargando = true;
     this.mensaje = '';
     this.error = '';
     
     this.asistenciaService.checkin().subscribe({
       next: (response) => {
-        console.log('✅ CHECK-IN exitoso:', response);
         this.mensaje = response;
         this.enOficina = true;
         this.cargando = false;
@@ -136,7 +115,6 @@ export class CheckinOutComponent implements OnInit {
         }, 1000);
       },
       error: (err) => {
-        console.error('❌ Error en CHECK-IN:', err);
         
         if (err.status === 401) {
           this.error = 'Sesión expirada. Redirigiendo a login...';
@@ -153,14 +131,12 @@ export class CheckinOutComponent implements OnInit {
   }
 
   realizarCheckout(): void {
-    console.log('=== INICIANDO CHECK-OUT ===');
     this.cargando = true;
     this.mensaje = '';
     this.error = '';
     
     this.asistenciaService.checkout().subscribe({
       next: (response) => {
-        console.log('✅ CHECK-OUT exitoso:', response);
         this.mensaje = response;
         this.enOficina = false;
         this.cargando = false;
@@ -170,7 +146,6 @@ export class CheckinOutComponent implements OnInit {
         }, 1000);
       },
       error: (err) => {
-        console.error('❌ Error en CHECK-OUT:', err);
         
         if (err.status === 401) {
           this.error = 'Sesión expirada. Redirigiendo a login...';

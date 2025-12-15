@@ -43,7 +43,6 @@ export class UsuariosComponent implements OnInit {
         this.cargandoLista = false;
       },
       error: (err) => {
-        console.error('Error al cargar usuarios:', err);
         this.error = 'No se pudieron cargar los usuarios';
         this.cargandoLista = false;
       }
@@ -77,8 +76,6 @@ export class UsuariosComponent implements OnInit {
         rol: this.formUsuario.value.rol!.toUpperCase(),
         enabled: true
       };
-
-      console.log('Enviando usuario:', usuario);
 
       this.adminService.crearUsuario(usuario).subscribe({
         next: (msg) => {
@@ -143,7 +140,6 @@ export class UsuariosComponent implements OnInit {
   }
 
   editarUsuario(usuario: Usuario) {
-    console.log('Editar usuario:', usuario);
     
     this.modoEdicion = true;
     this.usuarioEditandoId = usuario.id;

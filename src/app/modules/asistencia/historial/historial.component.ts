@@ -31,7 +31,6 @@ export class HistorialComponent implements OnInit {
         this.cargando = false;
       },
       error: (err) => {
-        console.error('Error al cargar historial:', err);
         this.cargando = false;
       }
     });
@@ -46,7 +45,6 @@ export class HistorialComponent implements OnInit {
           this.cargando = false;
         },
         error: (err) => {
-          console.error('Error al filtrar:', err);
           this.cargando = false;
         }
       });

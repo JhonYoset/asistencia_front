@@ -45,11 +45,9 @@ export class JustificacionSolicitudComponent implements OnInit {
       motivo: this.formJustificacion.value.motivo!.trim()
     };
 
-    console.log('Enviando justificación:', justificacion);
 
     this.justificacionService.solicitarJustificacion(justificacion).subscribe({
       next: (response) => {
-        console.log('Respuesta exitosa:', response);
         this.mensaje = `✅ Justificación enviada correctamente\n` +
                       `ID: ${response.id}\n` +
                       `Estado: ${response.estado}`;
@@ -63,8 +61,6 @@ export class JustificacionSolicitudComponent implements OnInit {
         this.cargando = false;
       },
       error: (err) => {
-        console.error('Error completo:', err);
-        console.error('Error body:', err.error);
         
         if (err.error && typeof err.error === 'object' && err.error.mensaje) {
           this.error = err.error.mensaje;
