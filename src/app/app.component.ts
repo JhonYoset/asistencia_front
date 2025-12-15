@@ -7,7 +7,16 @@ import { AuthService } from './services/auth.service';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  title = 'Sistema de Asistencia';
+  sidebarVisible = false;
 
-  constructor(public authService: AuthService) {} 
+  constructor(public authService: AuthService) {}
+
+  toggleSidebar() {
+    this.sidebarVisible = !this.sidebarVisible;
+  }
+
+  closeSidebar() {
+    this.sidebarVisible = false;
+  }
 }
+

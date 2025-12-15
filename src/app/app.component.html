@@ -1,11 +1,28 @@
 <div class="app-container">
-  <div *ngIf="authService.isLoggedIn()" class="app-layout">
-    <app-sidebar></app-sidebar>
-    <div class="main-content">
-      <router-outlet></router-outlet>
+  <div *ngIf="authService.isLoggedIn()">
+    
+    <button class="hamburger-btn" (click)="toggleSidebar()" [class.active]="sidebarVisible">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+
+    <div class="sidebar-overlay" 
+         [class.visible]="sidebarVisible" 
+         (click)="closeSidebar()">
     </div>
+
+    <aside class="sidebar" [class.open]="sidebarVisible">
+      <app-sidebar></app-sidebar>
+    </aside>
+
+    <main class="main-content" [class.sidebar-open]="sidebarVisible">
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
   </div>
-  
+
   <div *ngIf="!authService.isLoggedIn()">
     <router-outlet></router-outlet>
   </div>

@@ -5,6 +5,19 @@
         <i class="fas fa-file-signature me-2"></i> Solicitar Justificación
       </h3>
     </div>
+    <div class="card mt-4 bg-light">
+      <div class="card-body">
+        <h4 class="text-muted">
+          <i class="fas fa-info-circle me-2"></i> Información Importante
+        </h4>
+        <ul class="text-muted mb-0 small">
+          <li><strong>Tardanza:</strong> Ingreso después de las 9:10 AM</li>
+          <li><strong>Ausencia:</strong> No asistencia a la jornada laboral</li>
+          <li>Tu justificación será revisada por un administrador</li>
+          <li>Recibirás una notificación cuando sea aprobada o rechazada</li>
+      </ul>
+    </div>
+
     <div class="card-body">
       <form [formGroup]="formJustificacion" (ngSubmit)="solicitarJustificacion()">
         <div class="row mb-3">
@@ -26,7 +39,7 @@
             <label class="form-label fw-bold">
               <i class="fas fa-tag me-2"></i> Tipo de Justificación
             </label>
-            <select formControlName="tipo" class="form-select">
+            <select formControlName="tipo" class="form-control">
               <option value="TARDANZA">Tardanza</option>
               <option value="AUSENCIA">Ausencia</option>
             </select>
@@ -89,18 +102,7 @@
         <button type="button" class="btn-close" (click)="error=''"></button>
       </div>
 
-      <div class="card mt-4 bg-light">
-        <div class="card-body">
-          <h6 class="text-muted">
-            <i class="fas fa-info-circle me-2"></i> Información Importante
-          </h6>
-          <ul class="text-muted mb-0 small">
-            <li><strong>Tardanza:</strong> Ingreso después de las 9:10 AM</li>
-            <li><strong>Ausencia:</strong> No asistencia a la jornada laboral</li>
-            <li>Tu justificación será revisada por un administrador</li>
-            <li>Recibirás una notificación cuando sea aprobada o rechazada</li>
-          </ul>
-        </div>
+      
       </div>
     </div>
   </div>

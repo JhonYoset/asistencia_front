@@ -4,13 +4,13 @@
       <h3 class="mb-0">
         <i class="fas fa-users-cog me-2"></i> Gestión de Usuarios
       </h3>
-      <span class="badge bg-light text-dark">
+      
+    </div>
+    <span class="badge bg-light text-dark">
         Total: {{ getTotalUsuarios() }} | 
         Activos: {{ getUsuariosActivos() }} | 
         Inactivos: {{ getUsuariosInactivos() }}
       </span>
-    </div>
-    
     <div class="card-body">
 
       <div class="mb-5">
@@ -63,12 +63,14 @@
           
           <div class="col-md-2">
             <label class="form-label fw-bold">Rol *</label>
-            <select formControlName="rol" class="form-select">
+            <select formControlName="rol" class="form-control">
               <option value="EMPLEADO">Empleado</option>
               <option value="ADMIN">Administrador</option>
             </select>
           </div>
           
+          
+        </form>
           <div class="col-md-1 d-flex align-items-end">
             <button 
               type="submit" 
@@ -79,8 +81,6 @@
               <i *ngIf="!cargando" [ngClass]="modoEdicion ? 'fas fa-save' : 'fas fa-plus'"></i>
             </button>
           </div>
-        </form>
-
         <div *ngIf="modoEdicion" class="mt-2">
           <button class="btn btn-outline-secondary" (click)="cancelarEdicion()">
             <i class="fas fa-times me-2"></i> Cancelar Edición
@@ -105,7 +105,9 @@
           <h5>
             <i class="fas fa-list me-2 text-primary"></i>Usuarios Registrados
           </h5>
-          <div class="col-md-4">
+          
+        </div>
+        <div class="col-md-4">
             <div class="input-group">
               <span class="input-group-text">
                 <i class="fas fa-search"></i>
@@ -116,8 +118,6 @@
                      placeholder="Buscar por username o nombre...">
             </div>
           </div>
-        </div>
-
         <div *ngIf="cargandoLista" class="text-center my-5">
           <div class="spinner-border text-primary" role="status">
             <span class="visually-hidden">Cargando usuarios...</span>
